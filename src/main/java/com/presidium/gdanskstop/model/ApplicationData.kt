@@ -11,4 +11,8 @@ data class Stop(
     val idStop2: Int,
     val idStop3: Int,
     val idStop4: Int,
-)
+){
+    override fun toString(): String {
+        return name
+    }
+}
