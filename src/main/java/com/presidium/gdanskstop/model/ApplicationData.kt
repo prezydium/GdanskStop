@@ -1,6 +1,6 @@
 package com.presidium.gdanskstop.model
 
-data class ApplicationData(private val listOfLines: List<Line>, private val listOfStops: List<Stop>)
+class ApplicationData(var MutableList: List<Line>, var listOfStops: MutableList<Stop>)
 
 data class Line (val routeId: Int, val routeShortName: String, val routeLongName: String,val routeType: String)
 
