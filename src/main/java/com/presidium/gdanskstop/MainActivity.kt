@@ -58,9 +58,9 @@ class MainActivity : AppCompatActivity() {
         listOfStopsView.onItemClickListener = OnItemClickListener { _, _, position, _ ->
             val element: Stop =
                 listOfStopsAdapter.getItem(position) as Stop
-            Log.i("xxx", element.name + element.displayCode + element.idStop1)
+            Log.i("xxx", element.name)
             listOfStopsView.visibility = View.GONE
-            stopTableService.queryStopTable(this, currentStopRecords, listOf(element.idStop1), arrayAdapterForCurrentStop)
+            stopTableService.queryStopTable(this, currentStopRecords, element.stopId, arrayAdapterForCurrentStop)
             currentStopView.visibility = View.VISIBLE
         }
 

@@ -16,14 +16,14 @@ class StopTableService {
     fun queryStopTable(
         context: Context,
         stopTableResults: MutableList<TakeoffRecord>,
-        stopIds: List<Int>,
+        stopId: Int,
         adapterToBeUpdated: ArrayAdapter<*>
     ) {
         val queue = Volley.newRequestQueue(context)
         val url =
             "https://ckan2.multimediagdansk.pl/departures?stopId="
 
-        val urlWithQueryParam= url + stopIds[0]
+        val urlWithQueryParam= url + stopId
 
         val stopsRequest = JsonObjectRequest(
             Request.Method.GET, urlWithQueryParam, null,
