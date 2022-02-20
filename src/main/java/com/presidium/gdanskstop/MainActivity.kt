@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         listOfStopsView.onItemClickListener = OnItemClickListener { _, _, position, _ ->
             val element: Stop =
                 listOfStopsAdapter.getItem(position) as Stop
-            Log.i("xxx", element.name)
+            Log.i("Getting stop table for: ", element.name)
             listOfStopsView.visibility = View.GONE
             searchView.visibility = View.GONE
             stopTableService.queryStopTable(this, currentStopRecords, element.stopId, arrayAdapterForCurrentStop)
