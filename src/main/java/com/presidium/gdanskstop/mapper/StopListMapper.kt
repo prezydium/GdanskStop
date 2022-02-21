@@ -5,6 +5,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.time.LocalDate
 import java.util.*
+import kotlin.collections.HashMap
 
 fun mapJsonObjectToStopsList(queryResponse: JSONObject, currentDate: LocalDate): List<Stop> {
     val actualData = getDataForCurrentDayOrFirst(queryResponse, currentDate)
@@ -29,7 +30,12 @@ private fun getDataForCurrentDayOrFirst(
     return try {
         queryResponse.getJSONObject(currentDate.toString())
     } catch (excpt: JSONException) {
-        val firstAvailableDate = queryResponse.keys().next()
-        return queryResponse.getJSONObject(firstAvailableDate)
+        val setOfDates: MutableSet<LocalDate> = mutableSetOf()
+        val keys = queryResponse.keys()
+        while (keys.hasNext()){
+            setOfDates.add(LocalDate.parse(keys.next()))
+        }
+        val firstAvailableDate = setOfDates.minOrNull()!!
+        return queryResponse.getJSONObject(firstAvailableDate.toString())
     }
 }
