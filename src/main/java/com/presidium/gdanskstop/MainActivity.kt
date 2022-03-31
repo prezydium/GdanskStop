@@ -19,27 +19,28 @@ import com.presidium.gdanskstop.service.StopTableService
 
 class MainActivity : AppCompatActivity() {
 
-    private val stopListService: StopListService = StopListService()
     private val lineListService: LineListService = LineListService()
     private val stopTableService: StopTableService = StopTableService()
-
     private val applicationData: ApplicationData = ApplicationData(ArrayList(), ArrayList())
-    private var currentStopRecords: MutableList<TakeoffRecord> = ArrayList()
 
+    private var currentStopRecords: MutableList<TakeoffRecord> = ArrayList()
     private lateinit var listOfStopsView: ListView
+
     private lateinit var listOfStopsAdapter: ArrayAdapter<*>
     private lateinit var searchView: SearchView;
-
     private lateinit var currentStopView: ListView
+
     private lateinit var arrayAdapterForCurrentStop: ArrayAdapter<*>
+
+    private lateinit var stopListService: StopListService
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        listOfStopsView = findViewById(R.id.list_of_stops)
+        stopListService = StopListService(this)
+        setViewReferences()
 
-        currentStopView = findViewById(R.id.current_stop)
         currentStopView.visibility = View.GONE
         val arrayAdapterForCurrentStop: ArrayAdapter<*> = ArrayAdapter(
             this,
@@ -48,9 +49,6 @@ class MainActivity : AppCompatActivity() {
         )
         currentStopView.adapter = arrayAdapterForCurrentStop
         this.arrayAdapterForCurrentStop = arrayAdapterForCurrentStop
-
-        searchView = findViewById(R.id.search_stop)
-
 
         loadApplicationData()
 
@@ -74,6 +72,12 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun setViewReferences() {
+        listOfStopsView = findViewById(R.id.list_of_stops)
+        searchView = findViewById(R.id.search_stop)
+        currentStopView = findViewById(R.id.current_stop)
+    }
+
     fun showStops(view: View) {
         currentStopView.visibility = View.GONE
         listOfStopsAdapter.notifyDataSetChanged()
@@ -82,7 +86,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadApplicationData() {
-        stopListService.queryStopList(this, applicationData)
+        stopListService.initialLoad(this, applicationData)
         lineListService.queryLineEndpoint(this)
     }
 

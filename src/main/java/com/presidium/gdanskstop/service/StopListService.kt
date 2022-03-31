@@ -8,9 +8,32 @@ import com.android.volley.toolbox.Volley
 import com.presidium.gdanskstop.mapper.mapJsonObjectToStopsList
 import com.presidium.gdanskstop.model.ApplicationData
 import org.json.JSONObject
+import java.io.File
+import java.lang.Exception
 import java.time.LocalDate
 
-class StopListService {
+class StopListService(context: Context) {
+
+    var stopListFile = File(context.filesDir, "stoplist.json")
+
+
+    fun initialLoad(context: Context, applicationData: ApplicationData) {
+        if (stopListFile.exists()) {
+            try {
+                val stopListFileContent = stopListFile.readText()
+                val loadedData =
+                    mapJsonObjectToStopsList(JSONObject(stopListFileContent), LocalDate.now())
+                applicationData.listOfStops.clear()
+                applicationData.listOfStops.addAll(loadedData)
+            } catch (e: Exception) {
+                queryStopList(context, applicationData)
+            }
+        } else {
+            Log.i("", "File with stop list not found, creating new one")
+            //   stopListFile.createNewFile()
+            queryStopList(context, applicationData)
+        }
+    }
 
     fun queryStopList(context: Context, applicationData: ApplicationData) {
         val queue = Volley.newRequestQueue(context)
@@ -24,6 +47,7 @@ class StopListService {
                 if (mappedResults.isNotEmpty()) {
                     applicationData.listOfStops.clear()
                     applicationData.listOfStops.addAll(mappedResults)
+                    cacheDataInFile(response)
                 } else {
                     Log.w("StopListService", "Empty response from list of stops endpoint")
                 }
@@ -31,5 +55,9 @@ class StopListService {
             { /*TODO error handling*/ })
 
         queue.add(stopsRequest)
+    }
+
+    private fun cacheDataInFile(response: JSONObject) {
+        stopListFile.writeText(response.toString())
     }
 }
